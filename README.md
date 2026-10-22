@@ -7,6 +7,15 @@ Six-page static site for client review. No build step, no dependencies to instal
 ---
 
 
+## Hero button — 22 Oct 2026
+
+Home hero button now reads **"CFA, CSA and distributor for corporate hospitals"** (was
+"Appoint us as your CFA"). Still links to the Contact page. On phones the label wraps to two
+centred lines; on desktop "See what we stock" sits on the line below.
+
+---
+
+
 ## Responsiveness, menu and link check — 22 Oct 2026
 
 Tested on all six pages at 17 screen sizes: phones 320–414 px (portrait and landscape),

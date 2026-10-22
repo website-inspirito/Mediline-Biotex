@@ -1462,3 +1462,4 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
 .cinfo b,.route b,.cinfo small,.route small{overflow-wrap:break-word}
 .bars>.bar{min-width:0}
 @media (max-width:360px){.bar .v{font-size:9.5px;letter-spacing:0}.bar .yr{font-size:8.5px;letter-spacing:0}}
+@media (max-width:940px){.hero-cta .btn{text-align:center}}
