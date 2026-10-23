@@ -7,6 +7,19 @@
    fully readable page rather than a blank one.
    ========================================================= */
 (function () {
+  /* Opened straight from a folder (file://): clean links like "about" have no file behind
+     them, so point them at about.html. On the live site this does nothing. */
+  if (location.protocol === 'file:') {
+    var map = { './': 'index.html', 'about': 'about.html', 'products': 'products.html',
+                'team': 'team.html', 'gallery': 'gallery.html', 'contact': 'contact.html' };
+    var links = document.querySelectorAll('a[href]');
+    for (var i = 0; i < links.length; i++) {
+      var h = links[i].getAttribute('href'), m = h.match(/^(\.\/|about|products|team|gallery|contact)(#.*)?$/);
+      if (m) links[i].setAttribute('href', map[m[1]] + (m[2] || ''));
+    }
+  }
+})();
+(function () {
   var docEl = document.documentElement;
   if (!window.jQuery) { if (window.console) console.warn('Mediline: jQuery unavailable — animations disabled.'); return; }
   docEl.classList.add('fx');
@@ -523,7 +536,7 @@
   $('.field input, .field textarea').on('input blur', function () {
     $(this).toggleClass('has', $(this).val().length > 0);
   });
-  $('#sendBtn').on('click', function () { $('#formMsg').stop(true, true).slideDown(300); });
+
 
   /* ---------- 22. Ripple ---------- */
   $(document).on('click', '.btn', function (e) {
@@ -653,19 +666,15 @@
         '<div><h5>Who buys it</h5><p>' + t.buyers + '</p></div>' +
         '<div><h5>How we handle it</h5><p>' + t.handling + '</p></div>' +
       '</div>' +
-      '<div class="meter"><div class="lab"><span>Depth of stock</span><span>' + t.depth + '%</span></div>' +
-        '<div class="bar"><i></i></div></div>' +
       '<p class="supp-cta"><a href="#enquire">Ask which brands we carry in ' + t.name.toLowerCase() +
         ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>';
 
     var $p = $('#expPanel');
     $p.stop(true, true).fadeTo(140, 0, function () {
       $p.html(html).fadeTo(300, 1);
-      setTimeout(function () { $p.find('.meter .bar i').css('width', t.depth + '%'); }, 90);
     });
   }
   render(0);
-  setTimeout(function () { $('#expPanel .meter .bar i').css('width', T[0].depth + '%'); }, 400);
 
   $list.on('click', '.exp-item', function () {
     $('.exp-item').removeClass('on');
@@ -742,6 +751,58 @@
     $('#lightbox').css('display', 'flex').hide().fadeIn(220);
     $('body').css('overflow', 'hidden');
   });
+
+  /* ---------- enquiry forms -> WhatsApp (primary) / email (alternative) ---------- */
+  var WA_NO = '919686575835';
+  function enqCollect($send) {
+    var $box = $send.parents().filter(function () { return $(this).find('.form-grid').length; }).first();
+    var d = { lines: [], missing: [], emailBad: false, first: null, name: '', org: '', topic: '' };
+    $box.find('.field').removeClass('bad');
+    var $pick = $box.find('.pick');
+    if ($pick.length) {
+      var picked = $pick.find('button.on').map(function () { return $(this).data('p'); }).get();
+      if (picked.length) { d.topic = picked.join(', '); d.lines.push([$pick.data('label') || 'Topic', d.topic]); }
+    }
+    $box.find('.field').each(function () {
+      var $f = $(this), $in = $f.find('input, textarea'), v = $.trim($in.val() || ''),
+          lbl = $.trim($f.find('label').clone().children('.req').remove().end().text());
+      var bad = false;
+      if ($in.prop('required') && !v) { d.missing.push(lbl); bad = true; }
+      if (v && $in.attr('type') === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { d.emailBad = true; bad = true; }
+      if (bad) { $f.addClass('bad'); if (!d.first) d.first = $in; }
+      if (v) { d.lines.push([lbl.replace(/\?$/, ''), v]); if (/^name$/i.test(lbl)) d.name = v; if (/organisation/i.test(lbl)) d.org = v; }
+    });
+    return d;
+  }
+  $('.send #sendBtn, .send .mail-alt').on('click', function (e) {
+    var $a = $(this), $send = $a.closest('.send'), d = enqCollect($send), src = $send.data('src');
+    var $err = $send.find('.form-err'), $msg = $send.find('#formMsg');
+    if (d.missing.length || d.emailBad) {
+      e.preventDefault();
+      var need = d.missing.join(', ');
+      $err.text(d.missing.length ? 'Please fill in: ' + need + (/[?.]$/.test(need) ? '' : '.') : 'Please check the email address.').prop('hidden', false);
+      $msg.text('');
+      d.first.trigger('focus');
+      return;
+    }
+    $err.prop('hidden', true).text('');
+    if ($a.hasClass('mail-alt')) {
+      var to = /CFA|partnership|Super distribution/i.test(d.topic) ? 'pramod@medilinebiotex.com' : $send.data('mail');
+      var subj = 'Website enquiry' + (d.topic ? ' — ' + d.topic : '') + ((d.name || d.org) ? ' — ' + (d.name || d.org) : '');
+      var body = 'Hello Mediline Biotex,\r\n\r\nI would like to make an enquiry.\r\n\r\n' +
+        $.map(d.lines, function (l) { return l[0] + ': ' + l[1]; }).join('\r\n') +
+        '\r\n\r\nRegards,' + ((d.name || d.org) ? '\r\n' + (d.name || d.org) : '') + '\r\n\r\n(Sent from the ' + src + ', medilinebiotex.com)';
+      $a.attr('href', 'mailto:' + to + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body));
+      $msg.html('Your email app is opening with the details filled in. If nothing opens, write to <a href="mailto:' + to + '">' + to + '</a>.');
+    } else {
+      var text = 'Hello Mediline Biotex, I would like to make an enquiry.\n\n' +
+        $.map(d.lines, function (l) { return '*' + l[0] + ':* ' + l[1]; }).join('\n') +
+        '\n\n_Sent from the ' + src + ', medilinebiotex.com_';
+      $a.attr('href', 'https://wa.me/' + WA_NO + '?text=' + encodeURIComponent(text));
+      $msg.text('WhatsApp is opening with your enquiry — press send there to reach our team.');
+    }
+  });
+  $('.field input, .field textarea').on('input', function () { $(this).closest('.field').removeClass('bad'); });
 
   /* ---------- keyboard + state for clickable non-buttons (Oct 21) ---------- */
   $(document).on('keydown', '[role="button"][tabindex]', function (e) {

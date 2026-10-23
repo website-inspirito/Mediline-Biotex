@@ -1463,3 +1463,21 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
 .bars>.bar{min-width:0}
 @media (max-width:360px){.bar .v{font-size:9.5px;letter-spacing:0}.bar .yr{font-size:8.5px;letter-spacing:0}}
 @media (max-width:940px){.hero-cta .btn{text-align:center}}
+
+/* ---------- enquiry forms -> WhatsApp / email (Oct 23) ---------- */
+.send{margin-top:20px}
+.btn-wa{background:#0F8043;color:#fff;box-shadow:0 10px 24px -10px rgba(15,128,67,.55)}
+.btn-wa:hover,.btn-wa:focus-visible{background:#0B6B37;color:#fff}
+.btn-wa svg{width:20px;height:20px;flex:none}
+.send-note{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:13.5px;color:var(--slate)}
+.send-note::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#25D366;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
+.send-alt{margin:6px 0 0;font-size:13.5px;color:var(--slate)}
+.mail-alt{color:var(--teal-dk);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.mail-alt:hover{color:var(--orange)}
+.form-err{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:#FDECEA;color:#A12B1C;font-size:13.5px}
+.field.bad input,.field.bad textarea{border-color:#D9442F;box-shadow:0 0 0 3px rgba(217,68,47,.12)}
+.field label .req{color:var(--orange)}
+#formMsg:not(:empty){display:block}
+@media (max-width:940px){.send .btn-wa{width:100%;justify-content:center}}
+.nf{min-height:62vh;display:flex;align-items:center;padding-top:140px}
+.nf>.wrap{width:100%}.nf .sub{margin-top:18px}

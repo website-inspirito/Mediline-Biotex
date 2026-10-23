@@ -1,0 +1,13 @@
+{
+  "name": "Mediline Biotex Pvt. Ltd.",
+  "short_name": "Mediline Biotex",
+  "description": "CFA, CSA and distributor for corporate hospitals — Bangalore.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#37AB9C",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

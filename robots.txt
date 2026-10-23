@@ -1,0 +1,6 @@
+# Mediline Biotex Pvt. Ltd. — https://medilinebiotex.com
+# All search engines and AI answer engines are welcome to crawl the whole site.
+User-agent: *
+Allow: /
+
+Sitemap: https://medilinebiotex.com/sitemap.xml

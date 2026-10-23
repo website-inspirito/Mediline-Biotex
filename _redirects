@@ -1,0 +1,18 @@
+# Old WordPress addresses -> new pages (301 keeps any Google ranking they had)
+/home              /          301
+/home/             /          301
+/about-us          /about     301
+/about-us/         /about     301
+/about/            /about     301
+/products/         /products  301
+/product/*         /products  301
+/our-team          /team      301
+/our-team/         /team      301
+/team/             /team      301
+/gallery/          /gallery   301
+/contact-us        /contact   301
+/contact-us/       /contact   301
+/contact/          /contact   301
+/index.php         /          301
+/feed              /          301
+/feed/             /          301
